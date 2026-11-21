@@ -42,9 +42,9 @@ async function boot() {
   const chrome = initChrome();
 
   const detail = initDetail();
-  let labApi = null;
+  let labApi = null, shelfRef = null;
   const labHook = (book) => {
-    const go = () => { document.getElementById("lab").scrollIntoView({ behavior: "smooth" }); labApi && labApi.load(book); };
+    const go = () => { shelfRef && shelfRef.closeReader && shelfRef.closeReader(); document.getElementById("lab").scrollIntoView({ behavior: "smooth" }); labApi && labApi.load(book); };
     setTimeout(go, 1400);
   };
   detail.onAction((act, book) => { if (act === "lab") labHook(book); });
@@ -53,6 +53,7 @@ async function boot() {
     onTextMode: (book, quad, host) => detail.open(book, quad, host),
     onLab: (book) => labHook(book),
   });
+  shelfRef = shelf;
   detail.bindShelf(shelf);
   if (import.meta.env && import.meta.env.DEV) window.__shelf = shelf;
   chrome.bindShelf(shelf);

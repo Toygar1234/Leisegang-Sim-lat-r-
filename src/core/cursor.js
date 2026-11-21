@@ -31,6 +31,7 @@ export const cursor = {
 export function initCursor() {
   if (!window.matchMedia("(pointer: fine)").matches) return;
   window.addEventListener("pointermove", (e) => {
+    if (mx < -50) { cx = e.clientX; cy = e.clientY; el.classList.remove("is-hidden"); }
     mx = e.clientX; my = e.clientY;
     const t = e.target.closest ? e.target.closest("[data-cursor], button, a, input, select, label, summary") : null;
     let m = null;

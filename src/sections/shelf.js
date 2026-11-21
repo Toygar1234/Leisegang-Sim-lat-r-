@@ -414,6 +414,7 @@ export async function initShelf({ onProgress, onActive, onTextMode, onLab }) {
     activeBook: () => BOOKS[active],
     goTo: (id) => { const i = BOOKS.findIndex((b) => b.id === id); if (i >= 0) jumpTo(i); },
     openBook,
+    closeReader: () => { if (reader.active) closeReader(); },
     coverCanvas: (id) => masters[BOOKS.findIndex((b) => b.id === id)]?.coverCanvas,
   };
 }

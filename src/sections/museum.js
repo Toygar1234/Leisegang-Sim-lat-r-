@@ -72,7 +72,8 @@ export function initMuseum() {
   let cur = -1, model = null, appear = 1, explode = 0, explodeT = 0;
   const parts = [];
 
-  function select(i) {
+  let seenSection = false;
+  function select(i, award = true) {
     if (i === cur) return;
     cur = i;
     const m = MUSEUM[i];
@@ -103,14 +104,16 @@ export function initMuseum() {
       <p class="tiny">Sürükle: çevir · Tekerlek: yakınlaştır</p>`;
     info.querySelector("#expBtn")?.addEventListener("click", () => { explodeT = explodeT ? 0 : 1; sfx.whoosh(); info.querySelector("#expBtn").textContent = explodeT ? "Birleştir" : "Parçalara ayır"; });
     info.querySelector("#nextMus").addEventListener("click", () => { sfx.click(); select((cur + 1) % MUSEUM.length); });
-    if (store.addOnce("equipment", m.id)) {
+    if (award && store.addOnce("equipment", m.id)) {
       strip.children[i].classList.add("is-seen");
       store.addXP(5, "müze");
       if (store.get().equipment.length === MUSEUM.length && store.badge("curator")) { store.addXP(60, "rozet"); toast({ icon: "🏅", title: "Rozet: Müze Rehberi", sub: "Bütün aletleri inceledin!", xp: 60 }); }
     }
   }
   strip.addEventListener("click", (e) => { const b = e.target.closest(".mus-item"); if (b) { sfx.click(); select(+b.dataset.i); } });
-  select(0);
+  select(0, false);
+  const io = new IntersectionObserver((es) => { if (es.some((e) => e.isIntersecting) && !seenSection) { seenSection = true; io.disconnect(); if (store.addOnce("equipment", MUSEUM[cur].id)) { strip.children[cur].classList.add("is-seen"); store.addXP(5, "müze"); } } }, { threshold: 0.5 });
+  io.observe(viewEl);
 
   addView({ el: viewEl, tick: (dt, t) => {
     if (model) {

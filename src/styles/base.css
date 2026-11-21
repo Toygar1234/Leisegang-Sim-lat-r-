@@ -319,7 +319,7 @@ body[data-theme="paper"] .topbar.is-scrolled { background: linear-gradient(180de
 @media (max-width: 767px) {
   :root { --H: min(60vw, 40svh); --topbar: 64px; }
   .topbar { padding: 0 14px; }
-  .logo__main { font-size: 17px; }
+  .logo__main { font-size: 15px; white-space: nowrap; }
   .logo__sub { display: none; }
   .xp__bar, .xp__num, #qualityLbl { display: none; }
   .rail { display: none; }

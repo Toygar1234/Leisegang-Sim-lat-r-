@@ -273,7 +273,28 @@ export function initLab() {
     g.innerHTML = col("A") + col("B");
   }
   renderCompare();
-  const download = (name, data, type) => { const a = document.createElement("a"); a.href = typeof data === "string" && data.startsWith("data:") ? data : URL.createObjectURL(new Blob([data], { type })); a.download = name; document.body.appendChild(a); a.click(); a.remove(); };
+  /**
+   * Dosya kaydetme: claude.ai'de paylaşılan sayfada "downloads" yeteneği (izleyici onay verir),
+   * internetsiz tek dosya sürümünde normal tarayıcı indirmesi kullanılır.
+   */
+  let dlCap;
+  const getDownloads = () => {
+    if (dlCap === undefined) dlCap = window.claude && typeof window.claude.use === "function" ? window.claude.use("downloads").catch(() => null) : Promise.resolve(null);
+    return dlCap;
+  };
+  async function download(name, data, type) {
+    const blob = data instanceof Blob ? data : new Blob([data], { type });
+    const dl = await getDownloads();
+    if (dl) {
+      try { await dl.save({ filename: name, data: blob }); toast({ icon: "💾", title: "Dosya kaydedildi", sub: name }); }
+      catch (e) { if (e && e.code !== "declined") toast({ icon: "ℹ️", title: "Dosya kaydedilemedi", sub: "Bu görünümde indirme kullanılamıyor." }); }
+      return;
+    }
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob); a.download = name;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+  }
   document.getElementById("csvBtn").addEventListener("click", () => {
     const r = lastAnalysis;
     if (!r || !r.n) { toast({ icon: "ℹ️", title: "Önce bir deney yap" }); return; }
@@ -281,7 +302,11 @@ export function initLab() {
     download(`liesegang_${r.book.id}_${r.geo}.csv`, "﻿" + rows.join("\n"), "text/csv");
     sfx.click();
   });
-  document.getElementById("pngBtn").addEventListener("click", () => { stage.render(); download(`liesegang_${book.id}.png`, stage.renderer.domElement.toDataURL("image/png"), "image/png"); sfx.click(); });
+  document.getElementById("pngBtn").addEventListener("click", () => {
+    stage.render();
+    stage.renderer.domElement.toBlob((b) => { if (b) download(`liesegang_${book.id}.png`, b, "image/png"); }, "image/png");
+    sfx.click();
+  });
 
   // ── Döngü ──
   addView({ el: viewEl, tick: (dt) => {

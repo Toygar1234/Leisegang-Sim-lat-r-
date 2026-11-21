@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Liesegang Lab</title>
+  <meta name="description" content="Liesegang halkaları için 3B, etkileşimli bilim simülatörü: kitaplık, sanal laboratuvar, malzeme müzesi, görevler ve quiz." />
+  <meta name="theme-color" content="#1d0f0a" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231F3FB0'/%3E%3Cg fill='none' stroke='%23F1E6CC' stroke-width='3'%3E%3Ccircle cx='32' cy='32' r='6'/%3E%3Ccircle cx='32' cy='32' r='12'/%3E%3Ccircle cx='32' cy='32' r='20'/%3E%3C/g%3E%3C/svg%3E" />
+</head>
+<body>
+  <!-- Arka plan: kâğıt → gece laboratuvarı geçişi -->
+  <div class="backdrop" aria-hidden="true"></div>
+  <div class="grain" aria-hidden="true"></div>
+
+  <!-- Yükleme ekranı -->
+  <div class="loader" id="loader" aria-live="polite">
+    <div class="loader__rings" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+    <div class="loader__title">Liesegang Lab</div>
+    <div class="lbl loader__status" id="loaderStatus">Kitaplık hazırlanıyor</div>
+  </div>
+
+  <!-- Üst çubuk -->
+  <header class="topbar" id="topbar">
+    <button class="box lbl topbar__menu" id="menuBtn" data-cursor="btn" aria-expanded="false" aria-controls="navOverlay">İçindekiler</button>
+    <a class="logo" href="#raf" data-cursor="btn" aria-label="Liesegang Lab, başa dön">
+      <span class="logo__main">Liesegang Lab</span>
+      <span class="logo__sub">Periyodik çökelme laboratuvarı</span>
+    </a>
+    <div class="topbar__right">
+      <button class="xp" id="xpChip" data-cursor="btn" aria-label="İlerleme ve rozetler">
+        <span class="xp__lvl lbl" id="xpLevel">Çırak</span>
+        <span class="xp__bar"><i id="xpFill"></i></span>
+        <span class="xp__num lbl" id="xpNum">0 XP</span>
+      </button>
+      <button class="icon-btn" id="soundBtn" data-cursor="btn" aria-label="Sesi aç/kapat" aria-pressed="true">
+        <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path class="snd-wave" d="M16 8.5c1.2 1 1.8 2.2 1.8 3.5s-.6 2.5-1.8 3.5M18.5 6c2 1.6 3 3.6 3 6s-1 4.4-3 6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </button>
+      <button class="icon-btn" id="qualityBtn" data-cursor="btn" aria-label="Grafik kalitesi">
+        <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M12 3l2.2 4.6 5 .7-3.6 3.5.9 5L12 14.5 7.5 16.8l.9-5L4.8 8.3l5-.7z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+        <span class="lbl" id="qualityLbl">Yüksek</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Bölüm gezgini (sağ kenar) -->
+  <nav class="rail" id="rail" aria-label="Bölümler"></nav>
+
+  <!-- İçindekiler katmanı -->
+  <div class="nav-overlay" id="navOverlay" hidden>
+    <div class="nav-overlay__inner">
+      <div class="lbl nav-overlay__kicker">İçindekiler</div>
+      <ol class="nav-overlay__list" id="navList"></ol>
+      <button class="box lbl nav-overlay__close" id="navClose" data-cursor="btn">Kapat</button>
+    </div>
+  </div>
+
+  <main id="app">
+    <!-- ═════════════ 0. KİTAPLIK (ana ekran) ═════════════ -->
+    <section class="hero" id="raf" aria-label="Deney kitaplığı" data-theme="dark">
+      <nav class="tabs" id="tabs" aria-label="Kategoriler">
+        <span class="tabs__ind" id="tabsInd" aria-hidden="true"></span>
+      </nav>
+      <div class="shelf" id="shelf">
+        <canvas class="shelf__canvas" id="shelfCanvas" aria-label="Üç boyutlu kitap rafı"></canvas>
+      </div>
+      <button class="sr-only" id="openBtn">Ortadaki kitabı aç</button>
+      <div class="caption" id="caption" aria-live="polite">
+        <div class="mask"><div class="caption__title" id="capTitle"></div></div>
+        <div class="mask"><div class="lbl caption__sub" id="capSub"></div></div>
+        <div class="mask"><div class="caption__year" id="capYear"></div></div>
+      </div>
+      <button class="arrow arrow--l" id="prevBtn" data-cursor="btn" aria-label="Önceki kitap">
+        <svg viewBox="0 0 18 10" width="18" height="10" aria-hidden="true"><path d="M5 1 L1 5 L5 9 M1 5 H17" fill="none" stroke="currentColor" stroke-width="1.2"/></svg>
+      </button>
+      <button class="arrow arrow--r" id="nextBtn" data-cursor="btn" aria-label="Sonraki kitap">
+        <svg viewBox="0 0 18 10" width="18" height="10" aria-hidden="true"><path d="M13 1 L17 5 L13 9 M17 5 H1" fill="none" stroke="currentColor" stroke-width="1.2"/></svg>
+      </button>
+      <div class="hero__foot">
+        <span class="lbl">Toygar Özdemir · 9. Sınıf · Kimya Projesi</span>
+        <a class="lbl hero__scroll" href="#nedir" data-cursor="btn">Aşağı kaydır <span aria-hidden="true">↓</span></a>
+        <span class="lbl hero__hint">Sürükle · Ok tuşları · Kitaba tıkla</span>
+      </div>
+    </section>
+
+    <!-- ═════════════ 1. NEDİR ═════════════ -->
+    <section class="sec sec--paper" id="nedir" data-theme="paper" data-rail="Nedir?">
+      <div class="sec__head">
+        <div class="lbl kicker"><span class="kicker__no">01</span> Liesegang halkası nedir?</div>
+        <h2 class="sec__title reveal">Kimya kendi kendine <em>desen çizebilir mi?</em></h2>
+      </div>
+      <div class="split">
+        <div class="split__text">
+          <p class="lead reveal">Bir akik taşını kestiğinde cetvelle çizilmiş gibi iç içe bantlar görürsün. 1896'da Raphael Liesegang, jelin içinde iki maddeyi yavaşça buluşturarak aynı şeyi laboratuvarda yaptı. Çökelti her yerde eşit oluşmadı; <strong>aralıkları giderek açılan bantlar</strong> hâlinde oluştu.</p>
+          <div class="facts reveal">
+            <div class="fact"><div class="fact__num" data-count="1896">1896</div><div class="lbl">Liesegang'ın deneyi</div></div>
+            <div class="fact"><div class="fact__num" data-count="130">130</div><div class="lbl">Yıldır süren araştırma</div></div>
+            <div class="fact"><div class="fact__num">√t</div><div class="lbl">Cephenin ilerleme hızı</div></div>
+          </div>
+          <div class="cards3 reveal">
+            <div class="mini-card"><div class="mini-card__ico">≈</div><h3>Jel</h3><p>Suyu tutan bir ağ. Sıvının akarak karışmasını engeller; maddeler yalnızca yavaşça yayılır.</p></div>
+            <div class="mini-card"><div class="mini-card__ico">→</div><h3>Difüzyon</h3><p>Tanecikler çok oldukları yerden az oldukları yere kendiliğinden yayılır. 4 kat süre, 2 kat mesafe!</p></div>
+            <div class="mini-card"><div class="mini-card__ico">↓</div><h3>Çökelti</h3><p>İki iyon buluşunca suda çözünmeyen bir katı oluşur. Ama hemen değil: önce aşırı doygunluk gerekir.</p></div>
+          </div>
+          <p class="note reveal">Sağdaki tüpü fareyle çevir, Petri kabına geç. Sayfayı kaydırdıkça bantlar oluşur: kaydırma çubuğun bir zaman makinesi!</p>
+        </div>
+        <div class="split__view">
+          <div class="view3d" id="introView" data-cursor="drag">
+            <div class="view3d__ui">
+              <div class="seg" id="introSeg" role="tablist">
+                <button class="seg__btn is-on" data-geo="tube" role="tab" aria-selected="true">Tüp</button>
+                <button class="seg__btn" data-geo="petri" role="tab" aria-selected="false">Petri kabı</button>
+              </div>
+              <div class="lbl view3d__time" id="introTime">t = 0</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═════════════ 2. NASIL OLUŞUR ═════════════ -->
+    <section class="sec sec--dark sec--pin" id="nasil" data-theme="dark" data-rail="Nasıl oluşur?">
+      <div class="pin" id="mechPin">
+        <div class="pin__view" id="mechView" data-cursor="drag"></div>
+        <div class="pin__panel">
+          <div class="lbl kicker"><span class="kicker__no">02</span> Nasıl oluşur? 4 adımda</div>
+          <ol class="steps" id="mechSteps">
+            <li class="step is-on" data-step="0">
+              <div class="step__no">1</div>
+              <div><h3>Üstten gelen iyonlar jele yayılır</h3><p>Dış elektrolit (ör. amonyak) jelin üstünde çok derişiktir. Fick yasasına göre aşağı doğru yayılır. Mavi parçacıklar onları gösterir.</p></div>
+            </li>
+            <li class="step" data-step="1">
+              <div class="step__no">2</div>
+              <div><h3>İyonlar buluşur, ama hemen çökmez</h3><p>Jelde bekleyen iç elektrolit (turuncu) ile buluşurlar. Çökelti oluşması için iyon çarpımının <em>aşırı doygunluk eşiğini</em> geçmesi gerekir.</p></div>
+            </li>
+            <li class="step" data-step="2">
+              <div class="step__no">3</div>
+              <div><h3>Eşik aşılınca: çekirdeklenme!</h3><p>Küçük katı "tohumlar" oluşur ve çevrelerindeki iyonları yutarak büyür. İlk bant doğar.</p></div>
+            </li>
+            <li class="step" data-step="3">
+              <div class="step__no">4</div>
+              <div><h3>Bant çevresini boşaltır, döngü tekrarlar</h3><p>Bant, yakınındaki iyonları tükettiği için önünde boş bir bölge kalır. Cephe ilerleyip eşik yeniden aşılınca yeni bant oluşur. Aralıklar giderek açılır.</p></div>
+            </li>
+          </ol>
+          <div class="pin__legend">
+            <span class="dot dot--a"></span><span class="lbl">Dış iyon</span>
+            <span class="dot dot--b"></span><span class="lbl">İç iyon</span>
+            <span class="dot dot--d"></span><span class="lbl">Çökelti kristali</span>
+          </div>
+          <div class="pin__progress"><i id="mechProg"></i></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═════════════ 3. SANAL LABORATUVAR ═════════════ -->
+    <section class="sec sec--dark" id="lab" data-theme="dark" data-rail="Laboratuvar">
+      <div class="sec__head sec__head--row">
+        <div>
+          <div class="lbl kicker"><span class="kicker__no">03</span> Sanal laboratuvar</div>
+          <h2 class="sec__title reveal">Kendi deneyini <em>tasarla</em></h2>
+        </div>
+        <p class="sec__intro reveal">Kimyasalı seç, derişimleri değiştir, başlat. Arka planda gerçek bir matematik motoru Fick yasasını ve çekirdeklenme kurallarını saniyede yüz binlerce kez çözer.</p>
+      </div>
+      <div class="lab" id="labRoot">
+        <aside class="lab__panel lab__panel--left" id="labControls" aria-label="Deney ayarları"></aside>
+        <div class="lab__stage">
+          <div class="view3d view3d--lab" id="labView" data-cursor="drag"></div>
+          <div class="lab__transport" id="labTransport"></div>
+          <div class="lab__readout" id="labReadout"></div>
+        </div>
+        <aside class="lab__panel lab__panel--right" id="labCharts" aria-label="Canlı grafikler"></aside>
+      </div>
+      <div class="lab__extra" id="labExtra"></div>
+    </section>
+
+    <!-- ═════════════ 4. YASALAR ═════════════ -->
+    <section class="sec sec--dark" id="yasalar" data-theme="dark" data-rail="Matematik">
+      <div class="sec__head">
+        <div class="lbl kicker"><span class="kicker__no">04</span> Desenin gizli matematiği</div>
+        <h2 class="sec__title reveal">Dört yasa, <em>bir desen</em></h2>
+        <p class="sec__intro reveal">Bantların nerede ve ne zaman oluşacağını tahmin etmek zordur, ama bantlar şaşırtıcı derecede düzenli kurallara uyar. Bu kurallar 120 yıldır ölçülüyor. Aşağıdaki grafikler, laboratuvarda yaptığın son deneyin verileriyle çizilir.</p>
+      </div>
+      <div class="laws" id="laws"></div>
+      <div class="spacetime">
+        <div class="spacetime__text">
+          <div class="lbl kicker">3B uzay-zaman grafiği</div>
+          <h3 class="h3">Bantların doğum anları tek bir yüzeyde</h3>
+          <p>Yatay eksen tüpteki konum, derinlik zaman, yükseklik çökelti miktarı. Her tepe bir bant. Tepelerin oluştuğu noktalar bir parabol çizer: zaman yasası (x ∝ √t) gözünün önünde. Çevirmek için sürükle.</p>
+          <div class="seg" id="stSeg">
+            <button class="seg__btn is-on" data-mode="d">Çökelti</button>
+            <button class="seg__btn" data-mode="a">Dış iyon</button>
+            <button class="seg__btn" data-mode="b">İç iyon</button>
+          </div>
+        </div>
+        <div class="view3d view3d--st" id="stView" data-cursor="drag"></div>
+      </div>
+      <div class="theories" id="theories"></div>
+    </section>
+
+    <!-- ═════════════ 5. MÜZE ═════════════ -->
+    <section class="sec sec--dark" id="muze" data-theme="dark" data-rail="Malzemeler">
+      <div class="sec__head sec__head--row">
+        <div>
+          <div class="lbl kicker"><span class="kicker__no">05</span> 3B malzeme müzesi</div>
+          <h2 class="sec__title reveal">Laboratuvarın <em>aletleri</em></h2>
+        </div>
+        <p class="sec__intro reveal">Her aleti sürükleyerek çevir, tekerlekle yakınlaştır, "Parçalara ayır" ile içini gör. Gerçek bir Liesegang deneyinde hepsinin bir görevi var.</p>
+      </div>
+      <div class="museum" id="museum">
+        <div class="museum__stage view3d" id="museumView" data-cursor="drag"></div>
+        <div class="museum__info" id="museumInfo"></div>
+        <div class="museum__strip" id="museumStrip" role="tablist" aria-label="Malzemeler"></div>
+      </div>
+    </section>
+
+    <!-- ═════════════ 6. DOĞA ═════════════ -->
+    <section class="sec sec--dark" id="doga" data-theme="dark" data-rail="Doğada">
+      <div class="sec__head">
+        <div class="lbl kicker"><span class="kicker__no">06</span> Doğada ve teknolojide</div>
+        <h2 class="sec__title reveal">Tüpün <em>dışındaki</em> halkalar</h2>
+      </div>
+      <div class="nature" id="nature"></div>
+    </section>
+
+    <!-- ═════════════ 7. TARİHÇE ═════════════ -->
+    <section class="sec sec--dark" id="tarih" data-theme="dark" data-rail="Tarihçe">
+      <div class="sec__head">
+        <div class="lbl kicker"><span class="kicker__no">07</span> Tarihçe</div>
+        <h2 class="sec__title reveal">1855'ten <em>bugüne</em></h2>
+      </div>
+      <div class="timeline" id="timeline"></div>
+    </section>
+
+    <!-- ═════════════ 8. GÖREVLER ═════════════ -->
+    <section class="sec sec--dark" id="gorev" data-theme="dark" data-rail="Görevler">
+      <div class="sec__head sec__head--row">
+        <div>
+          <div class="lbl kicker"><span class="kicker__no">08</span> Görevler, rozetler ve quiz</div>
+          <h2 class="sec__title reveal">Bilim insanı <em>ol</em></h2>
+        </div>
+        <p class="sec__intro reveal">Deney yaptıkça, kitap okudukça ve soruları cevapladıkça puan (XP) kazanırsın. Seviye atla, rozetleri topla.</p>
+      </div>
+      <div class="game" id="game"></div>
+    </section>
+
+    <!-- ═════════════ 9. KAYNAKLAR ═════════════ -->
+    <section class="sec sec--dark" id="kaynak" data-theme="dark" data-rail="Kaynaklar">
+      <div class="sec__head">
+        <div class="lbl kicker"><span class="kicker__no">09</span> Kaynaklar, sözlük ve müfredat</div>
+        <h2 class="sec__title reveal">Bilimde <em>dürüstlük</em></h2>
+        <p class="sec__intro reveal">Bu simülatör gerçek bir matematik modeline dayanır, ama bir modeldir. Bantların oluşma yasaları sağlam ölçümlere dayanır; nedenleri ise hâlâ tartışılmaktadır. Simülatördeki sayılar gerçek bir tüpte birebir aynı çıkmaz. Eğilimleri ve yasaları doğru gösterir.</p>
+      </div>
+      <div class="refs" id="refs"></div>
+      <footer class="foot">
+        <div class="foot__logo">Liesegang Lab</div>
+        <div class="lbl">Toygar Özdemir · Mustafa Azmi Doğan Anadolu Lisesi · Ankara 2026</div>
+        <div class="lbl foot__muted">Model sonuçları örnek/varsayımsal veridir; gerçek deney sonucu değildir.</div>
+      </footer>
+    </section>
+  </main>
+
+  <!-- Kitap ayrıntısı (kitabı açınca büyüyen kâğıt) -->
+  <div class="detail" id="detail" role="dialog" aria-modal="true" aria-labelledby="dTitle" hidden>
+    <button class="box lbl detail__close" id="detailClose" data-cursor="btn">Kitabı kapat</button>
+    <div class="detail__logo"><span class="logo__main">Liesegang Lab</span></div>
+    <div class="detail__grid">
+      <article class="detail__text" id="detailText"></article>
+      <div class="detail__view">
+        <div class="view3d view3d--detail" id="detailView" data-cursor="drag"></div>
+        <svg class="ink" id="ink" viewBox="0 0 600 900" preserveAspectRatio="none" aria-hidden="true">
+          <defs>
+            <filter id="inkFilter" x="-20%" y="-20%" width="140%" height="140%">
+              <feTurbulence type="fractalNoise" baseFrequency="0.011" numOctaves="3" seed="7" />
+              <feDisplacementMap in="SourceGraphic" scale="120" xChannelSelector="R" yChannelSelector="G" />
+            </filter>
+            <mask id="inkMask" maskUnits="userSpaceOnUse" x="-200" y="-200" width="1000" height="1300">
+              <rect x="-200" y="-200" width="1000" height="1300" fill="white" />
+              <g filter="url(#inkFilter)" id="inkBlobs" fill="black"></g>
+            </mask>
+          </defs>
+          <rect x="-200" y="-200" width="1000" height="1300" fill="var(--sheet)" mask="url(#inkMask)" />
+        </svg>
+        <div class="detail__viewui" id="detailViewUI"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bildirimler ve özel imleç -->
+  <div class="toasts" id="toasts" aria-live="polite"></div>
+  <div class="cursor" id="cursor" aria-hidden="true">
+    <div class="cursor__ring"></div>
+    <div class="cursor__dot"></div>
+    <div class="cursor__label lbl"><span id="cursorLabel">Aç</span><span>Oku</span></div>
+  </div>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>

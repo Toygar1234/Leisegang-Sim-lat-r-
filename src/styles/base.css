@@ -47,6 +47,7 @@
   --fg-2: var(--muted);
   --accent: var(--cobalt);
   --line: var(--rule);
+  color-scheme: dark;
 }
 
 body[data-theme="dark"] {
@@ -62,7 +63,7 @@ body {
   margin: 0;
   font-family: var(--sans);
   color: var(--fg);
-  background: var(--paper);
+  background: #120805;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;

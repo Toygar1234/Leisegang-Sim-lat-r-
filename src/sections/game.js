@@ -38,7 +38,13 @@ export function initGame() {
         <div><b>${best}</b><span class="lbl">Doğru cevap</span></div>
       </div>
       <button class="btn btn--sm btn--ghost" id="resetProg" data-cursor="btn">İlerlemeyi sıfırla</button>`;
-    profile.querySelector("#resetProg").addEventListener("click", () => { if (confirm("Bütün puanların ve rozetlerin silinsin mi?")) { store.reset(); renderAll(); } });
+    const rb = profile.querySelector("#resetProg");
+    rb.addEventListener("click", () => {
+      if (rb.dataset.armed) { store.reset(); renderAll(); return; }
+      rb.dataset.armed = "1";
+      rb.textContent = "Emin misin? Tekrar tıkla";
+      setTimeout(() => { if (rb.isConnected) { delete rb.dataset.armed; rb.textContent = "İlerlemeyi sıfırla"; } }, 3500);
+    });
   }
   function renderBadges() {
     const got = store.get().badges;

@@ -64,6 +64,14 @@ export class Experiment {
     this.keyLight = key;
   }
 
+  /** Dar (dikey) ekranlarda kamerayı geri çeker. */
+  fit(v) {
+    const a = this.stage.camera.aspect || 1;
+    const k = a < 1.2 ? Math.pow(1.2 / a, 0.75) : 1;
+    const t = this.controls ? this.controls.target : new THREE.Vector3();
+    return v.clone().sub(t).multiplyScalar(k).add(t);
+  }
+
   clear() {
     this.root.traverse((o) => {
       if (o.geometry) o.geometry.dispose();
@@ -103,8 +111,10 @@ export class Experiment {
       empty.gelMesh.scale.y = 0.001; empty.gelMesh.visible = false;
       this.root.add(empty);
       this.vessel = tube;
-      if (this.controls) { this.controls.target.set(0, 0.5, 0); }
-      this.stage.camera.position.set(0.55, 0.85, 1.75);
+      if (this._lastGeo !== "tube") {
+        if (this.controls) { this.controls.target.set(0, 0.45, 0); }
+        this.stage.camera.position.copy(this.fit(new THREE.Vector3(0.7, 1.05, 2.35)));
+      }
     } else {
       const dish = petriDish({ texture: this.simTex.texture, colors: book.colors, R: 0.5 });
       dish.position.set(0, 0, 0.05);
@@ -114,8 +124,10 @@ export class Experiment {
       dr.rotation.z = Math.PI / 2.4;
       dr.position.set(0.72, 0.05, 0.25);
       this.root.add(dr);
-      if (this.controls) { this.controls.target.set(0, 0.05, 0); }
-      this.stage.camera.position.set(0.15, 1.15, 1.25);
+      if (this._lastGeo !== "petri") {
+        if (this.controls) { this.controls.target.set(0, 0.05, 0); }
+        this.stage.camera.position.copy(this.fit(new THREE.Vector3(0.2, 1.45, 1.6)));
+      }
     }
 
     if (this.o.bottles !== false && book.materials) {
@@ -141,7 +153,8 @@ export class Experiment {
       this.crystal = cr;
       this.root.add(grp);
     }
-    this.stage.camera.lookAt(this.controls ? this.controls.target : new THREE.Vector3(0, 0.4, 0));
+    if (this._lastGeo !== this.geometry) this.stage.camera.lookAt(this.controls ? this.controls.target : new THREE.Vector3(0, 0.4, 0));
+    this._lastGeo = this.geometry;
     this.restart();
   }
 
@@ -163,7 +176,7 @@ export class Experiment {
   }
 
   progress() { return this.sim ? Math.min(1, this.sim.frontPosition() / (this.sim.p.N * 0.9)) : 0; }
-  realTime() { return this.sim ? realSeconds(this.sim) : 0; }
+  realTime() { return this.sim ? realSeconds(this.sim, this.Dreal || 1.5e-9) : 0; }
 
   tick(dt) {
     if (this.sim && this.running && !this.finished) {

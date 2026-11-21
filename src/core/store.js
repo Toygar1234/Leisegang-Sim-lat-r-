@@ -19,6 +19,8 @@ const blank = () => ({
   books: [],
   equipment: [],
   missions: [],
+  labBooks: [],
+  bases: [],
   quiz: {},
   runs: 0,
   predictions: 0,

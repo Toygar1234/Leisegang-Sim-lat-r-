@@ -33,6 +33,8 @@ import { initChrome } from "./sections/chrome.js";
 const status = document.getElementById("loaderStatus");
 const loader = document.getElementById("loader");
 
+const ONLY = new URLSearchParams(location.search).get("only"); // geliştirme: tek bölümü test et
+
 async function boot() {
   initCursor();
   window.addEventListener("pointerdown", unlockAudio, { once: true });
@@ -46,7 +48,7 @@ async function boot() {
     setTimeout(go, 1400);
   };
   detail.onAction((act, book) => { if (act === "lab") labHook(book); });
-  const shelf = await initShelf({
+  const shelf = ONLY ? { goTo() {}, coverQuad: () => [{ x: 0, y: 0 }, { x: 10, y: 0 }, { x: 10, y: 10 }, { x: 0, y: 10 }], openBook() {} } : await initShelf({
     onProgress: (i, n) => { status.textContent = `Kitaplar ciltleniyor · ${i}/${n}`; },
     onTextMode: (book, quad, host) => detail.open(book, quad, host),
     onLab: (book) => labHook(book),
@@ -70,7 +72,9 @@ async function boot() {
     () => import("./sections/game.js").then((m) => m.initGame()),
     () => import("./sections/refs.js").then((m) => m.initRefs()),
   ];
-  for (const f of later) {
+  const names = ["intro", "mechanism", "lab", "laws", "museum", "nature", "timeline", "game", "refs"];
+  for (const [i, f] of later.entries()) {
+    if (ONLY && !ONLY.split(",").includes(names[i])) continue;
     try { await f(); } catch (err) { console.error("Bölüm kurulamadı:", err); }
     await new Promise((r) => setTimeout(r, 0));
   }

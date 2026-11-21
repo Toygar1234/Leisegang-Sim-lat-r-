@@ -138,10 +138,12 @@ export class SimTexture {
 }
 
 /** Gerçek süre: tüp 60 mm / 600 hücre (0,1 mm), D ≈ 1,5·10⁻⁹ m²/s → 1 zaman birimi ≈ 6,7 s. */
-export function realSeconds(sim) {
+export function realSeconds(sim, D = 1.5e-9) {
   const dx = sim.p.geometry === "radial" ? 0.15e-3 : 0.1e-3;
-  return sim.t * (dx * dx) / 1.5e-9;
+  return sim.t * (dx * dx) / D;
 }
+/** Hücre → milimetre (tüp: 0,1 mm/hücre; Petri: 0,15 mm/hücre). */
+export const cellMM = (sim) => (sim.p.geometry === "radial" ? 0.15 : 0.1);
 export function fmtDuration(sec) {
   if (sec < 60) return `${Math.round(sec)} sn`;
   const m = sec / 60, h = m / 60, d = h / 24;

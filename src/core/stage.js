@@ -83,6 +83,12 @@ export function createStage(host, o = {}) {
   };
   new ResizeObserver(() => stage.resize()).observe(host);
   stage.resize();
+  // Bölüm ekrana yaklaşınca gölgelendiricileri arka planda derle (ilk görünüşte takılma olmasın)
+  stage.warm = () => { try { return renderer.compileAsync(scene, camera); } catch { return Promise.resolve(); } };
+  const io = new IntersectionObserver((es) => {
+    if (es.some((e) => e.isIntersecting)) { io.disconnect(); if (!window.__noWarm) stage.warm(); }
+  }, { rootMargin: "1200px 0px" });
+  io.observe(host);
   return stage;
 }
 

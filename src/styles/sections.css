@@ -1,1 +1,194 @@
-/* sections */
+/* ═════════════ ALT BÖLÜMLER (gece laboratuvarı) ═════════════ */
+.sec {
+  position: relative;
+  padding: clamp(90px, 12vh, 150px) clamp(20px, 6vw, 96px);
+  color: var(--n-text);
+}
+.sec + .sec { border-top: 1px solid rgba(150, 180, 255, .07); }
+.sec__head { max-width: 1180px; margin: 0 auto 48px; }
+.sec__head--row { display: grid; grid-template-columns: 1.1fr 1fr; gap: 48px; align-items: end; }
+.kicker { display: inline-flex; align-items: center; gap: 10px; color: var(--glow); margin-bottom: 18px; }
+.kicker__no { font-family: var(--mono); font-weight: 500; padding: 4px 8px; border-radius: 6px; background: rgba(99, 227, 242, .12); box-shadow: inset 0 0 0 1px rgba(99, 227, 242, .35); }
+.sec__title {
+  font-family: "Archivo Variable", var(--sans); font-stretch: 125%; font-weight: 700;
+  font-size: clamp(38px, 5.6vw, 88px); line-height: .98; letter-spacing: -.025em;
+}
+.sec__title em { font-family: var(--serif); font-style: italic; font-weight: 400; font-stretch: normal; letter-spacing: -.01em; color: var(--amber); background: linear-gradient(90deg, #FFD68A, #F4B85A 40%, #FF8A5B); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; padding-right: .08em; }
+.sec__intro { font-size: 18px; line-height: 1.6; color: var(--n-text-2); max-width: 56ch; margin-top: 20px; }
+.sec__head--row .sec__intro { margin-top: 0; }
+.h3 { font-family: "Archivo Variable", var(--sans); font-stretch: 115%; font-weight: 700; font-size: 26px; line-height: 1.15; margin: 8px 0 12px; }
+
+.lead { font-family: var(--serif); font-size: clamp(20px, 1.8vw, 25px); line-height: 1.5; color: var(--n-text); }
+.lead strong { color: var(--amber); font-weight: 600; }
+.note { margin-top: 22px; font-size: 14px; color: var(--n-text-3); padding-left: 14px; border-left: 2px solid var(--glow); }
+
+/* Cam paneller */
+.glass {
+  background: linear-gradient(180deg, rgba(255, 255, 255, .055), rgba(255, 255, 255, .02));
+  border: 1px solid var(--n-line);
+  border-radius: 20px;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 30px 80px -40px rgba(0, 0, 0, .8), inset 0 1px 0 rgba(255, 255, 255, .06);
+}
+
+/* 3B görüntü kapları */
+.view3d { position: relative; border-radius: 22px; overflow: hidden; background: radial-gradient(120% 90% at 50% 25%, #13275a 0%, #0a1634 55%, #060d20 100%); box-shadow: 0 40px 100px -40px rgba(0, 0, 0, .9), inset 0 0 0 1px rgba(150, 180, 255, .14); }
+.view3d::after { content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; box-shadow: inset 0 1px 0 rgba(255, 255, 255, .08), inset 0 0 80px rgba(99, 227, 242, .05); }
+.view3d canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+.view3d__ui { position: absolute; left: 16px; right: 16px; top: 16px; z-index: 2; display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; pointer-events: none; }
+.view3d__ui > * { pointer-events: auto; }
+.view3d__time { font-family: var(--mono); color: var(--glow); background: rgba(5, 11, 26, .6); padding: 7px 10px; border-radius: 8px; letter-spacing: .02em; text-transform: none; font-size: 12px; }
+.view3d .seg { background: rgba(5, 11, 26, .55); border-color: rgba(150, 180, 255, .28); backdrop-filter: blur(8px); }
+
+/* Nedir */
+.split { max-width: 1280px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1.05fr; gap: clamp(28px, 4vw, 64px); align-items: start; }
+.split__view { position: sticky; top: 90px; }
+.split__view .view3d { height: min(78vh, 720px); }
+.facts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 34px 0; }
+.fact { padding: 18px; border-radius: 16px; background: rgba(255, 255, 255, .035); border: 1px solid var(--n-line); }
+.fact__num { font-family: "Archivo Variable", var(--sans); font-stretch: 125%; font-weight: 700; font-size: clamp(30px, 3vw, 44px); color: var(--amber); text-shadow: 0 0 24px rgba(245, 181, 86, .35); margin-bottom: 8px; }
+.fact .lbl { color: var(--n-text-2); }
+.cards3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.mini-card { padding: 20px; border-radius: 18px; background: linear-gradient(160deg, rgba(111, 141, 255, .12), rgba(255, 255, 255, .02)); border: 1px solid var(--n-line); transition: transform .5s var(--ease), border-color .4s, box-shadow .5s; }
+.mini-card:hover { transform: translateY(-6px) rotate(-.5deg); border-color: rgba(99, 227, 242, .5); box-shadow: 0 20px 50px -20px rgba(99, 227, 242, .35); }
+.mini-card__ico { width: 42px; height: 42px; border-radius: 12px; display: grid; place-items: center; font-size: 20px; margin-bottom: 14px; background: linear-gradient(135deg, var(--cobalt), #4f6dff); box-shadow: 0 0 24px rgba(111, 141, 255, .45); }
+.mini-card h3 { font-family: "Archivo Variable", var(--sans); font-stretch: 115%; font-size: 18px; margin-bottom: 6px; }
+.mini-card p { font-size: 14.5px; line-height: 1.5; color: var(--n-text-2); }
+.intro-scrub { margin-top: 28px; height: 6px; border-radius: 6px; background: rgba(255, 255, 255, .08); overflow: hidden; }
+.intro-scrub i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, var(--glow), var(--amber)); box-shadow: 0 0 16px rgba(99, 227, 242, .6); }
+
+/* Nasıl oluşur (sabitlenen bölüm) */
+.sec--pin { padding: 0; }
+.pin { position: relative; height: 420vh; }
+.pin__view { position: sticky; top: 0; height: 100vh; width: 100%; }
+.pin__view canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+.pin__panel {
+  position: absolute; top: 0; right: clamp(16px, 5vw, 80px); height: 100%; width: min(460px, 42vw);
+  pointer-events: none;
+}
+.pin__panel > * { pointer-events: auto; }
+.pin__inner { position: sticky; top: 14vh; padding: 28px; }
+.steps { list-style: none; margin: 18px 0 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+.step { display: flex; gap: 16px; padding: 16px 18px; border-radius: 16px; border: 1px solid transparent; opacity: .38; transform: translateX(14px); transition: opacity .5s var(--ease), transform .6s var(--ease), background .5s, border-color .5s; }
+.step.is-on { opacity: 1; transform: none; background: rgba(255, 255, 255, .05); border-color: rgba(99, 227, 242, .35); box-shadow: 0 0 40px -10px rgba(99, 227, 242, .35); }
+.step__no { flex: none; width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; font-family: var(--mono); font-weight: 500; background: rgba(99, 227, 242, .14); color: var(--glow); }
+.step.is-on .step__no { background: var(--glow); color: var(--navy-900); box-shadow: 0 0 20px rgba(99, 227, 242, .8); }
+.step h3 { font-family: "Archivo Variable", var(--sans); font-stretch: 112%; font-size: 17px; margin-bottom: 4px; }
+.step p { font-size: 14px; line-height: 1.5; color: var(--n-text-2); }
+.pin__legend { display: flex; gap: 10px; align-items: center; margin-top: 18px; flex-wrap: wrap; color: var(--n-text-2); }
+.dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+.dot--a { background: #63E3F2; box-shadow: 0 0 10px #63E3F2; }
+.dot--b { background: #FF9A4A; box-shadow: 0 0 10px #FF9A4A; }
+.dot--d { background: #FFFFFF; box-shadow: 0 0 10px #fff; }
+.pin__progress { margin-top: 18px; height: 3px; border-radius: 3px; background: rgba(255, 255, 255, .08); overflow: hidden; }
+.pin__progress i { display: block; height: 100%; width: 0; background: var(--glow); }
+.pin__title { font-family: "Archivo Variable", var(--sans); font-stretch: 125%; font-weight: 700; font-size: clamp(28px, 3vw, 42px); line-height: 1; }
+
+/* Yasalar */
+.laws { max-width: 1280px; margin: 0 auto; display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+.law { padding: 24px; display: grid; grid-template-rows: auto auto 1fr auto; gap: 10px; min-height: 420px; }
+.law__top { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+.law__name { color: var(--glow); }
+.law__eq { font-family: var(--serif); font-size: clamp(22px, 2vw, 30px); color: #fff; }
+.law__plain { font-size: 15px; line-height: 1.55; color: var(--n-text-2); }
+.law__chart { position: relative; min-height: 220px; }
+.law__val { font-family: var(--mono); font-size: 13px; color: var(--amber); }
+.law__src { font-size: 12px; color: var(--n-text-3); }
+.spacetime { max-width: 1280px; margin: 16px auto 0; display: grid; grid-template-columns: 0.8fr 1.2fr; gap: 16px; align-items: stretch; }
+.spacetime__text { padding: 28px; }
+.spacetime__text p { color: var(--n-text-2); line-height: 1.6; margin-bottom: 18px; }
+.view3d--st { min-height: 480px; }
+.theories { max-width: 1280px; margin: 16px auto 0; }
+.theories table { width: 100%; border-collapse: collapse; font-size: 14.5px; }
+.theories th { text-align: left; font-family: var(--sans); font-weight: 600; font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--n-text-3); padding: 12px; border-bottom: 1px solid var(--n-line-2); }
+.theories td { padding: 14px 12px; border-bottom: 1px solid var(--n-line); color: var(--n-text-2); vertical-align: top; line-height: 1.5; }
+.theories td:first-child { color: var(--n-text); font-weight: 600; }
+.theories tr { transition: background .3s; }
+.theories tr:hover { background: rgba(255, 255, 255, .03); }
+.tag { display: inline-block; padding: 3px 8px; border-radius: 999px; font-size: 11px; font-weight: 600; letter-spacing: .05em; }
+.tag--solid { background: rgba(61, 220, 151, .15); color: var(--good); }
+.tag--debate { background: rgba(242, 193, 78, .15); color: var(--warn); }
+
+/* Müze */
+.museum { max-width: 1320px; margin: 0 auto; display: grid; grid-template-columns: 1.5fr 1fr; grid-template-rows: auto auto; gap: 16px; }
+.museum__stage { height: min(68vh, 640px); }
+.museum__info { padding: 28px; display: flex; flex-direction: column; gap: 14px; }
+.museum__info h3 { font-family: "Archivo Variable", var(--sans); font-stretch: 125%; font-weight: 700; font-size: clamp(28px, 2.6vw, 40px); line-height: 1; }
+.museum__info p { color: var(--n-text-2); line-height: 1.6; }
+.museum__role { padding: 14px 16px; border-radius: 14px; background: rgba(245, 181, 86, .08); border: 1px solid rgba(245, 181, 86, .25); color: #FFE2B0; font-size: 14.5px; line-height: 1.55; }
+.museum__specs { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.museum__specs div { padding: 10px 12px; border-radius: 10px; background: rgba(255, 255, 255, .04); font-size: 13px; color: var(--n-text-2); }
+.museum__specs b { display: block; color: var(--n-text); font-size: 15px; margin-top: 3px; }
+.museum__strip { grid-column: 1 / -1; display: flex; gap: 10px; overflow-x: auto; padding: 4px 2px 12px; scrollbar-width: thin; }
+.mus-item { flex: none; width: 128px; padding: 14px 10px 12px; border-radius: 16px; text-align: center; border: 1px solid var(--n-line); background: rgba(255, 255, 255, .03); transition: transform .4s var(--ease), border-color .3s, background .3s, box-shadow .4s; }
+.mus-item:hover { transform: translateY(-4px); }
+.mus-item.is-on { border-color: var(--amber); background: rgba(245, 181, 86, .1); box-shadow: 0 0 30px -8px rgba(245, 181, 86, .5); }
+.mus-item__ico { font-size: 26px; margin-bottom: 8px; }
+.mus-item .lbl { color: var(--n-text-2); font-size: 10px; line-height: 1.3; }
+.mus-item.is-seen .lbl::after { content: " ✓"; color: var(--good); }
+
+/* Doğa */
+.nature { max-width: 1280px; margin: 0 auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.nat { display: flex; flex-direction: column; overflow: hidden; }
+.nat .view3d { height: 300px; border-radius: 20px 20px 0 0; box-shadow: none; }
+.nat__body { padding: 22px; display: flex; flex-direction: column; gap: 10px; flex: 1; }
+.nat__body h3 { font-family: "Archivo Variable", var(--sans); font-stretch: 115%; font-size: 20px; }
+.nat__body p { font-size: 14.5px; line-height: 1.55; color: var(--n-text-2); }
+.nat__body .btn { margin-top: auto; align-self: flex-start; }
+
+/* Tarihçe */
+.timeline { position: relative; max-width: 1280px; margin: 0 auto; }
+.tl-track { display: flex; gap: 16px; overflow-x: auto; padding: 30px 4px 26px; scroll-snap-type: x mandatory; scrollbar-width: thin; }
+.tl-line { position: absolute; left: 0; right: 0; top: 46px; height: 2px; background: linear-gradient(90deg, transparent, var(--glow), var(--amber), transparent); opacity: .5; }
+.tl-card { position: relative; flex: none; width: 300px; scroll-snap-align: start; padding: 54px 22px 22px; }
+.tl-card::before { content: ""; position: absolute; left: 22px; top: 8px; width: 14px; height: 14px; border-radius: 50%; background: var(--amber); box-shadow: 0 0 0 5px rgba(245, 181, 86, .2), 0 0 24px rgba(245, 181, 86, .7); }
+.tl-year { font-family: "Archivo Variable", var(--sans); font-stretch: 125%; font-weight: 700; font-size: 38px; color: var(--amber); margin-bottom: 6px; }
+.tl-card h3 { font-size: 17px; margin-bottom: 8px; }
+.tl-card p { font-size: 14px; line-height: 1.55; color: var(--n-text-2); }
+.tl-card small { display: block; margin-top: 10px; font-size: 12px; color: var(--n-text-3); }
+.tl-nav { display: flex; gap: 8px; justify-content: flex-end; }
+
+/* Kaynaklar */
+.refs { max-width: 1280px; margin: 0 auto; display: grid; grid-template-columns: 1.2fr 1fr; gap: 16px; }
+.refs__box { padding: 26px; }
+.refs__box h3 { font-family: "Archivo Variable", var(--sans); font-stretch: 115%; font-size: 20px; margin-bottom: 14px; }
+.refs__list { margin: 0; padding-left: 18px; font-size: 13.5px; line-height: 1.6; color: var(--n-text-2); max-height: 560px; overflow-y: auto; scrollbar-width: thin; }
+.refs__list li { margin-bottom: 6px; }
+.gloss { display: grid; grid-template-columns: 1fr; gap: 6px; max-height: 560px; overflow-y: auto; scrollbar-width: thin; }
+.gloss input { width: 100%; height: 40px; border-radius: 10px; border: 1px solid var(--n-line-2); background: rgba(255, 255, 255, .04); color: var(--n-text); padding: 0 12px; font: inherit; margin-bottom: 8px; }
+.gloss__row { display: grid; grid-template-columns: 1fr 1.6fr; gap: 10px; padding: 9px 10px; border-radius: 8px; font-size: 13.5px; }
+.gloss__row:nth-child(odd) { background: rgba(255, 255, 255, .025); }
+.gloss__row b { color: var(--n-text); }
+.gloss__row i { color: var(--n-text-3); font-style: normal; display: block; font-size: 12px; }
+.gloss__row span { color: var(--n-text-2); }
+.curr { grid-column: 1 / -1; padding: 26px; }
+.curr__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; }
+.curr__item { padding: 14px; border-radius: 12px; background: rgba(255, 255, 255, .035); border: 1px solid var(--n-line); }
+.curr__item b { display: block; font-family: var(--mono); color: var(--glow); margin-bottom: 6px; font-size: 13px; }
+.curr__item p { font-size: 13.5px; line-height: 1.5; color: var(--n-text-2); }
+.foot { max-width: 1280px; margin: 80px auto 0; padding-top: 40px; border-top: 1px solid var(--n-line); display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center; }
+.foot__logo { font-family: "Archivo Variable", var(--sans); font-stretch: 125%; font-weight: 700; font-size: clamp(40px, 7vw, 110px); background: linear-gradient(90deg, #FFD68A, #F4B85A, #FF8A5B, #6F8DFF); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; line-height: 1; }
+.foot .lbl { color: var(--n-text-2); }
+.foot__muted { color: var(--n-text-3) !important; }
+
+@media (max-width: 1000px) {
+  .sec__head--row, .split, .spacetime, .museum, .refs { grid-template-columns: 1fr; }
+  .split__view { position: relative; top: 0; }
+  .split__view .view3d { height: 60vh; }
+  .laws, .nature { grid-template-columns: 1fr; }
+  .pin__panel { position: absolute; left: 12px; right: 12px; width: auto; top: auto; bottom: 0; height: auto; }
+  .pin__inner { position: sticky; bottom: 10px; top: auto; padding: 16px; }
+  .steps .step:not(.is-on) { display: none; }
+  .facts, .cards3 { grid-template-columns: 1fr; }
+}
+
+/* Doğa listesi */
+.nat-list { display: flex; flex-direction: column; gap: 10px; max-height: 620px; overflow-y: auto; scrollbar-width: thin; padding-right: 4px; }
+.nat-card { text-align: left; padding: 18px 20px; display: flex; flex-direction: column; gap: 8px; transition: border-color .4s, transform .4s var(--ease), background .4s; }
+.nat-card h3 { font-family: "Archivo Variable", var(--sans); font-stretch: 115%; font-size: 19px; }
+.nat-card p { font-size: 14px; line-height: 1.55; color: var(--n-text-2); display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.nat-card:hover { transform: translateX(4px); }
+.nat-card.is-on { border-color: rgba(245, 181, 86, .6); background: linear-gradient(135deg, rgba(245, 181, 86, .12), rgba(255, 255, 255, .02)); box-shadow: 0 0 40px -14px rgba(245, 181, 86, .5); }
+.nat-card.is-on p { -webkit-line-clamp: unset; }
+.nat-card__more { color: var(--amber); opacity: 0; transition: opacity .3s; }
+.nat-card.is-on .nat-card__more { opacity: 1; }

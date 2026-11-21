@@ -89,8 +89,21 @@ export function initChrome() {
   onScroll();
 
   // Kaydırınca beliren öğeler
-  const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add("is-in"); io.unobserve(e.target); } }), { threshold: 0.15 });
-  const observeReveals = () => document.querySelectorAll(".reveal:not(.is-in)").forEach((el) => io.observe(el));
+  // (IntersectionObserver, clip-path ile gizlenmiş öğeleri görünmez sayar; bu yüzden konumla kontrol edilir)
+  let pending = [];
+  const observeReveals = () => { pending = [...document.querySelectorAll(".reveal:not(.is-in)")]; checkReveals(); };
+  let raf = 0;
+  function checkReveals() {
+    raf = 0;
+    const vh = window.innerHeight;
+    pending = pending.filter((el) => {
+      const r = el.getBoundingClientRect();
+      if (r.top < vh * 0.92 && r.bottom > -40) { el.classList.add("is-in"); return false; }
+      return true;
+    });
+  }
+  window.addEventListener("scroll", () => { if (!raf && pending.length) raf = requestAnimationFrame(checkReveals); }, { passive: true });
+  document.addEventListener("scroll", (e) => { if (e.target !== document && pending.length) checkReveals(); }, { capture: true, passive: true });
   observeReveals();
 
   // Sayılar

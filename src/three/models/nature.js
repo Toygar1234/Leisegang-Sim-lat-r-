@@ -68,14 +68,18 @@ export function agate() {
     roughen(new THREE.SphereGeometry(0.5, 96, 64, 0, Math.PI * 2, 0, Math.PI / 2), 0.07, 7, 4),
     new THREE.MeshPhysicalMaterial({ color: 0x6d5a4a, roughness: 0.95, metalness: 0, sheen: 0.3 })
   );
-  crust.rotation.x = Math.PI / 2;
-  crust.scale.set(1, 0.85, 1);
+  crust.rotation.x = -Math.PI / 2;
+  crust.scale.set(1, 1, 0.85);
   g.add(crust);
   const face = new THREE.Mesh(new THREE.CircleGeometry(0.47, 128), new THREE.MeshPhysicalMaterial({
     map: agateFace(), roughness: 0.06, clearcoat: 1, clearcoatRoughness: 0.02, transmission: 0.0, sheen: 0, envMapIntensity: 1.3,
   }));
-  face.scale.set(1, 0.85, 1);
+  face.scale.set(1, 1, 1);
   face.position.z = 0.002;
+  // Kesik yüzün kenarındaki ince parlak halka (cilalı taş)
+  const rim = new THREE.Mesh(new THREE.TorusGeometry(0.47, 0.012, 12, 128), new THREE.MeshPhysicalMaterial({ color: 0x8c6a52, roughness: 0.4, clearcoat: 1 }));
+  rim.position.z = 0.002;
+  g.add(rim);
   g.add(face);
   shadows(g);
   g.rotation.x = -0.25;
